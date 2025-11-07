@@ -1,0 +1,42 @@
+{% extends "base.html" %}
+{% block title %}Novo Carregamento{% endblock %}
+{% block content %}
+<div class="card shadow-sm">
+  <div class="card-body">
+    <h5 class="card-title">Novo Carregamento</h5>
+    <form method="POST">
+      <div class="mb-3">
+        <label class="form-label">Placa</label>
+        <input class="form-control" name="placa" required>
+      </div>
+
+      <div class="mb-3">
+        <label class="form-label">Status</label>
+        <select class="form-select" name="status">
+          {% for s in status_options %}
+          <option value="{{ s }}">{{ s }}</option>
+          {% endfor %}
+        </select>
+      </div>
+
+      <div class="mb-3">
+        <label class="form-label">Rota</label>
+        <input class="form-control" name="rota">
+      </div>
+
+      <div class="mb-3">
+        <label class="form-label">Destino</label>
+        <input class="form-control" name="destino">
+      </div>
+
+      <div class="form-check mb-3">
+        <input class="form-check-input" type="checkbox" id="entrega_finalizada" name="entrega_finalizada">
+        <label class="form-check-label" for="entrega_finalizada">Entrega finalizada</label>
+      </div>
+
+      <button class="btn btn-success" type="submit">Salvar</button>
+      <a class="btn btn-secondary ms-2" href="{{ url_for('index') }}">Voltar</a>
+    </form>
+  </div>
+</div>
+{% endblock %}

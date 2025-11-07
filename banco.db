@@ -1,0 +1,14 @@
+CREATE TABLE funcionarios (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    codigo_funcional TEXT UNIQUE NOT NULL,
+    senha TEXT NOT NULL
+);
+
+CREATE TABLE carregamentos (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    placa TEXT NOT NULL,
+    status TEXT NOT NULL,
+    rota TEXT NOT NULL,
+    destino TEXT NOT NULL,
+    entrega_finalizada TEXT NOT NULL
+);
