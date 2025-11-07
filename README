@@ -1,0 +1,12 @@
+1 - Documentação Inicial: Um arquivo README.md explicando o objetivo do projeto,
+escopo e metodologia adotada.
+2. Planejamento de Tarefas: Uso da aba Projects do GitHub para criar um quadro
+Kanban com as seguintes colunas: A Fazer, Em Progresso e Concluído.
+3. Código Base: Implementação de um sistema básico (ex.: sistema de login ou CRUD
+para gerenciamento de tarefas).
+4. Controle de Qualidade: Configuração de um pipeline básico usando GitHub
+Actions para testes automatizados.
+5. Histórico de Commits: Registro das atividades com commits bem descritos e
+estruturados.
+6. Gestão de Mudanças: Simulação de uma alteração no escopo do projeto, com uma
+justificativa no README.md e adaptação do Kanban.
