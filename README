@@ -1,4 +1,7 @@
-1 - Documentação Inicial: Um arquivo README.md explicando o objetivo do projeto,
+PROJETO PARA EMPRESA : TechFlow Solutions
+
+Tarefa Principal: 
+1. Documentação Inicial: Um arquivo README.md explicando o objetivo do projeto,
 escopo e metodologia adotada.
 2. Planejamento de Tarefas: Uso da aba Projects do GitHub para criar um quadro
 Kanban com as seguintes colunas: A Fazer, Em Progresso e Concluído.
@@ -9,4 +12,5 @@ Actions para testes automatizados.
 5. Histórico de Commits: Registro das atividades com commits bem descritos e
 estruturados.
 6. Gestão de Mudanças: Simulação de uma alteração no escopo do projeto, com uma
-justificativa no README.md e adaptação do Kanban.
+justificativa no README.md e adaptação do Kanban
+
