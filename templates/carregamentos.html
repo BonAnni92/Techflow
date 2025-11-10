@@ -1,0 +1,47 @@
+{% extends "base.html" %}
+{% block title %}Carregamentos{% endblock %}
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-3">
+  <h3 class="mb-0">Carregamentos</h3>
+  <a href="{{ url_for('home') }}" class="btn btn-success">+ Novo carregamento</a>
+</div>
+
+<div class="table-responsive">
+  <table class="table table-hover align-middle">
+    <thead class="table-light">
+      <tr>
+        <th>#</th>
+        <th>Placa</th>
+        <th>Status</th>
+        <th>Rota</th>
+        <th>Destino</th>
+        <th>Atualizado em</th>
+        <th>Atualizado por</th> <!-- 👈 NOVA COLUNA -->
+        <th>Entrega</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for c in carregamentos %}
+      <tr>
+        <td>{{ c.id }}</td>
+        <td><strong>{{ c.placa }}</strong></td>
+        <td>{{ c.status }}</td>
+        <td>{{ c.rota or '-' }}</td>
+        <td>{{ c.destino or '-' }}</td>
+        <td>{{ c.atualizado_em.strftime('%d/%m/%Y %H:%M') if c.atualizado_em else '-' }}</td>
+        <td>{{ c.atualizado_por or '-' }}</td> <!-- 👈 NOVO CAMPO -->
+        <td>
+          {% if c.entrega_finalizada %}
+            <span class="badge bg-success">Finalizada</span>
+          {% else %}
+            <span class="badge bg-warning text-dark">A caminho</span>
+          {% endif %}
+        </td>
+      </tr>
+      {% else %}
+      <tr><td colspan="8" class="text-center">Nenhum carregamento cadastrado.</td></tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% endblock %}
