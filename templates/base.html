@@ -18,7 +18,7 @@
     <!-- Nav -->
     <nav class="navbar navbar-expand-lg navbar-dark bg-primary fixed-top">
       <div class="container-fluid">
-        <a class="navbar-brand" href="{{ url_for('index') }}">Acompanhamento de Carregamentos</a>
+        <a class="navbar-brand" href="{{ url_for('home') }}">Acompanhamento de Carregamentos</a>
         <div class="collapse navbar-collapse justify-content-end">
           {% if session.funcionario %}
             <span class="navbar-text text-white me-3">Usuário: <strong>{{ session.funcionario }}</strong></span>
