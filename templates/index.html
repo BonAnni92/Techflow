@@ -1,60 +1,41 @@
-{% extends "base.html" %}
-{% block title %}Carregamentos{% endblock %}
+{% extends 'base.html' %}
 {% block content %}
 <div class="d-flex justify-content-between align-items-center mb-3">
-  <h3 class="mb-0">Carregamentos</h3>
-  <a href="{{ url_for('adicionar') }}" class="btn btn-success">+ Novo carregamento</a>
+  <h3>Controle de Carregamentos</h3>
+  <a href="{{ url_for('adicionar') }}" class="btn btn-success">+ Novo Carregamento</a>
 </div>
 
-<div class="table-responsive">
-  <table class="table table-hover align-middle">
-    <thead class="table-light">
-      <tr>
-        <th>#</th>
-        <th>Placa</th>
-        <th>Status</th>
-        <th>Rota</th>
-        <th>Destino</th>
-        <th>Atualizado em</th>
-        <th>Entrega</th>
-        <th>Ações</th>
-      </tr>
-    </thead>
-    <tbody>
-      {% for c in carregamentos %}
-      <tr>
-        <td>{{ c.id }}</td>
-        <td><strong>{{ c.placa }}</strong></td>
-        <td>
-          {% if c.status == "Em coleta" %}
-            <span class="badge bg-info badge-status">{{ c.status }}</span>
-          {% elif c.status == "Finalizado a coleta" %}
-            <span class="badge bg-success badge-status">{{ c.status }}</span>
-          {% else %}
-            <span class="badge bg-secondary badge-status">{{ c.status }}</span>
-          {% endif %}
-        </td>
-        <td>{{ c.rota or '-' }}</td>
-        <td>{{ c.destino or '-' }}</td>
-        <td>{{ c.atualizado_em.strftime('%d/%m/%Y %H:%M') if c.atualizado_em else '-' }}</td>
-        <td>
-          {% if c.entrega_finalizada %}
-            <span class="badge bg-success">Entrega finalizada</span>
-          {% else %}
-            <span class="badge bg-warning text-dark">A caminho</span>
-          {% endif %}
-        </td>
-        <td>
-          <a href="{{ url_for('editar', id=c.id) }}" class="btn btn-sm btn-outline-primary">Editar</a>
-          <form method="POST" action="{{ url_for('excluir', id=c.id) }}" style="display:inline" onsubmit="return confirm('Excluir este carregamento?');">
-            <button class="btn btn-sm btn-outline-danger" type="submit">Excluir</button>
-          </form>
-        </td>
-      </tr>
-      {% else %}
-      <tr><td colspan="8" class="text-center">Nenhum carregamento cadastrado.</td></tr>
-      {% endfor %}
-    </tbody>
-  </table>
-</div>
+<table class="table table-hover align-middle">
+  <thead class="table-primary">
+    <tr>
+      <th>ID</th>
+      <th>Placa</th>
+      <th>Status</th>
+      <th>Rota</th>
+      <th>Destino</th>
+      <th>Atualizado em</th>
+      <th>Atualizado por</th>
+      <th>Ações</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for c in carregamentos %}
+    <tr>
+      <td>{{ c.id }}</td>
+      <td>{{ c.placa }}</td>
+      <td>{{ c.status }}</td>
+      <td>{{ c.rota or "-" }}</td>
+      <td>{{ c.destino or "-" }}</td>
+      <td>{{ c.atualizado_em.strftime('%d/%m/%Y %H:%M') if c.atualizado_em else '-' }}</td>
+      <td>{{ c.atualizado_por or '-' }}</td>
+      <td>
+        <a href="{{ url_for('editar', id=c.id) }}" class="btn btn-sm btn-warning">Editar</a>
+        <form action="{{ url_for('excluir', id=c.id) }}" method="POST" style="display:inline;">
+          <button class="btn btn-sm btn-danger" onclick="return confirm('Deseja excluir este registro?')">Excluir</button>
+        </form>
+      </td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
 {% endblock %}

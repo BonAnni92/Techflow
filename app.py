@@ -40,16 +40,16 @@ class Carregamento(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     placa = db.Column(db.String(20), nullable=False)
     status = db.Column(db.String(50), nullable=False)
-    rota = db.Column(db.String(100))
-    destino = db.Column(db.String(200))
+    rota = db.Column(db.String(100), nullable=True)
+    destino = db.Column(db.String(200), nullable=True)
     entrega_finalizada = db.Column(db.Boolean, default=False)
     atualizado_em = db.Column(db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
-    atualizado_por = db.Column(db.String(50))  # coluna para registrar quem atualizou
+    atualizado_por = db.Column(db.String(50), nullable=True)
 
 
-# ---------------- SEED ----------------
+# ---------------- FUNÇÃO SEED ----------------
 def criar_seed():
-    """Cria usuário e carregamentos iniciais, se ainda não existirem."""
+    """Cria um funcionário e carregamentos iniciais se não existirem."""
     if not Funcionario.query.filter_by(codigo_funcional="125039").first():
         admin = Funcionario(codigo_funcional="125039")
         admin.set_password("125039")
@@ -62,28 +62,137 @@ def criar_seed():
             Carregamento(placa="GHI3C45", status="Finalizado a coleta", rota="Rota C", destino="Cliente Z", entrega_finalizada=True),
         ]
         db.session.bulk_save_objects(exemplos)
-
     db.session.commit()
 
 
 # ---------------- ROTAS ----------------
 @app.route("/")
 def home():
-    return redirect(url_for("listar_carregamentos"))
+    if "funcionario" in session:
+        return redirect(url_for("index"))
+    return redirect(url_for("login"))
 
 
-@app.route("/carregamentos")
-def listar_carregamentos():
+@app.route("/login", methods=["GET", "POST"])
+def login():
+    """Tela de login"""
+    if request.method == "POST":
+        codigo = request.form.get("codigo")
+        senha = request.form.get("senha")
+
+        if not codigo or not senha:
+            flash("Preencha código funcional e senha.", "warning")
+            return render_template("login.html")
+
+        funcionario = Funcionario.query.filter_by(codigo_funcional=codigo).first()
+
+        if funcionario and funcionario.check_password(senha):
+            session["funcionario"] = funcionario.codigo_funcional
+            session.permanent = True
+            flash(f"Bem-vindo(a), {funcionario.codigo_funcional}!", "success")
+            return redirect(url_for("index"))
+        else:
+            flash("Código funcional ou senha incorretos.", "danger")
+            return render_template("login.html")
+
+    return render_template("login.html")
+
+
+@app.route("/logout")
+def logout():
+    session.clear()
+    flash("Logout realizado com sucesso!", "info")
+    return redirect(url_for("login"))
+
+
+@app.route("/index")
+def index():
+    """Tela principal de carregamentos"""
+    if "funcionario" not in session:
+        return redirect(url_for("login"))
+
     carregamentos = Carregamento.query.order_by(Carregamento.atualizado_em.desc()).all()
-    return render_template("carregamentos.html", carregamentos=carregamentos)
+    return render_template("index.html", carregamentos=carregamentos, funcionario=session["funcionario"])
 
 
-# ---------------- EXECUÇÃO ----------------
+@app.route("/adicionar", methods=["GET", "POST"])
+def adicionar():
+    """Adicionar novo carregamento"""
+    if "funcionario" not in session:
+        return redirect(url_for("login"))
+
+    if request.method == "POST":
+        placa = request.form.get("placa")
+        status = request.form.get("status")
+        rota = request.form.get("rota")
+        destino = request.form.get("destino")
+
+        if not placa:
+            flash("A placa é obrigatória!", "warning")
+            return render_template("adicionar.html", status_options=STATUS_OPTIONS)
+
+        novo = Carregamento(
+            placa=placa,
+            status=status,
+            rota=rota,
+            destino=destino,
+            atualizado_por=session["funcionario"]
+        )
+        db.session.add(novo)
+        db.session.commit()
+        flash("Carregamento adicionado com sucesso!", "success")
+        return redirect(url_for("index"))
+
+    return render_template("adicionar.html", status_options=STATUS_OPTIONS)
+
+
+@app.route("/excluir/<int:id>", methods=["POST"])
+def excluir(id):
+    """Excluir carregamento"""
+    if "funcionario" not in session:
+        return redirect(url_for("login"))
+
+    carregamento = Carregamento.query.get_or_404(id)
+    db.session.delete(carregamento)
+    db.session.commit()
+    flash("Carregamento excluído com sucesso!", "info")
+    return redirect(url_for("index"))
+@app.route("/editar/<int:id>", methods=["GET", "POST"])
+def editar(id):
+    """Editar carregamento existente"""
+    if "funcionario" not in session:
+        return redirect(url_for("login"))
+
+    carregamento = Carregamento.query.get_or_404(id)
+
+    if request.method == "POST":
+        carregamento.placa = request.form.get("placa", carregamento.placa).strip()
+        carregamento.status = request.form.get("status", carregamento.status)
+        carregamento.rota = request.form.get("rota", carregamento.rota).strip()
+        carregamento.destino = request.form.get("destino", carregamento.destino).strip()
+        carregamento.entrega_finalizada = request.form.get("entrega_finalizada") == "on"
+        carregamento.atualizado_por = session.get("funcionario")
+        db.session.commit()
+        flash("✅ Carregamento atualizado com sucesso!", "success")
+        return redirect(url_for("index"))
+
+    return render_template("editar.html", carregamento=carregamento, status_options=STATUS_OPTIONS)
+
+
+    # ---------------- CONTEXTO GLOBAL (datetime no template) ----------------
+@app.context_processor
+def inject_datetime():
+    """Permite usar datetime nos templates Jinja"""
+    return {'datetime': datetime}
+# ---------------- INICIALIZAÇÃO ----------------
 if __name__ == "__main__":
     with app.app_context():
         db.create_all()
-        criar_seed()
+        try:
+            criar_seed()
+        except Exception as e:
+            print(f"Aviso: banco existente, seed ignorado. ({e})")
 
-    print("✅ Aplicação Flask rodando com sucesso!")
-    print("🌐 Acesse: http://127.0.0.1:5000/carregamentos")
+    print("✅ Servidor rodando em http://127.0.0.1:5000")
     app.run(debug=True)
+

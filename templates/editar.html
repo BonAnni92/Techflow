@@ -1,42 +1,35 @@
-{% extends "base.html" %}
-{% block title %}Editar Carregamento{% endblock %}
-{% block content %}
-<div class="card shadow-sm">
-  <div class="card-body">
-    <h5 class="card-title">Editar Carregamento</h5>
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <title>Editar Carregamento</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <h2>Editar Carregamento</h2>
     <form method="POST">
-      <div class="mb-3">
-        <label class="form-label">Placa</label>
-        <input class="form-control" name="placa" value="{{ carregamento.placa }}" required>
-      </div>
+        <label>Placa:</label>
+        <input type="text" name="placa" value="{{ carregamento.placa }}" required><br>
 
-      <div class="mb-3">
-        <label class="form-label">Status</label>
-        <select class="form-select" name="status">
-          {% for s in status_options %}
-            <option value="{{ s }}" {% if carregamento.status==s %}selected{% endif %}>{{ s }}</option>
-          {% endfor %}
-        </select>
-      </div>
+        <label>Status:</label>
+        <select name="status">
+            {% for status in status_options %}
+                <option value="{{ status }}" {% if status == carregamento.status %}selected{% endif %}>{{ status }}</option>
+            {% endfor %}
+        </select><br>
 
-      <div class="mb-3">
-        <label class="form-label">Rota</label>
-        <input class="form-control" name="rota" value="{{ carregamento.rota }}">
-      </div>
+        <label>Rota:</label>
+        <input type="text" name="rota" value="{{ carregamento.rota }}"><br>
 
-      <div class="mb-3">
-        <label class="form-label">Destino</label>
-        <input class="form-control" name="destino" value="{{ carregamento.destino }}">
-      </div>
+        <label>Destino:</label>
+        <input type="text" name="destino" value="{{ carregamento.destino }}"><br>
 
-      <div class="form-check mb-3">
-        <input class="form-check-input" type="checkbox" id="entrega_finalizada" name="entrega_finalizada" {% if carregamento.entrega_finalizada %}checked{% endif %}>
-        <label class="form-check-label" for="entrega_finalizada">Entrega finalizada</label>
-      </div>
+        <label>Entrega finalizada:</label>
+        <input type="checkbox" name="entrega_finalizada" {% if carregamento.entrega_finalizada %}checked{% endif %}><br>
 
-      <button class="btn btn-primary" type="submit">Atualizar</button>
-      <a class="btn btn-secondary ms-2" href="{{ url_for('index') }}">Voltar</a>
+        <button type="submit">Salvar alterações</button>
+        <a href="{{ url_for('index') }}">Cancelar</a>
     </form>
-  </div>
-</div>
-{% endblock %}
+</body>
+</html>
+

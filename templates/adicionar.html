@@ -1,42 +1,37 @@
-{% extends "base.html" %}
-{% block title %}Novo Carregamento{% endblock %}
+{% extends 'base.html' %}
 {% block content %}
-<div class="card shadow-sm">
-  <div class="card-body">
-    <h5 class="card-title">Novo Carregamento</h5>
-    <form method="POST">
-      <div class="mb-3">
-        <label class="form-label">Placa</label>
-        <input class="form-control" name="placa" required>
-      </div>
-
-      <div class="mb-3">
-        <label class="form-label">Status</label>
-        <select class="form-select" name="status">
-          {% for s in status_options %}
-          <option value="{{ s }}">{{ s }}</option>
-          {% endfor %}
-        </select>
-      </div>
-
-      <div class="mb-3">
-        <label class="form-label">Rota</label>
-        <input class="form-control" name="rota">
-      </div>
-
-      <div class="mb-3">
-        <label class="form-label">Destino</label>
-        <input class="form-control" name="destino">
-      </div>
-
-      <div class="form-check mb-3">
-        <input class="form-check-input" type="checkbox" id="entrega_finalizada" name="entrega_finalizada">
-        <label class="form-check-label" for="entrega_finalizada">Entrega finalizada</label>
-      </div>
-
-      <button class="btn btn-success" type="submit">Salvar</button>
-      <a class="btn btn-secondary ms-2" href="{{ url_for('index') }}">Voltar</a>
-    </form>
+<h3>Novo Carregamento</h3>
+<form method="POST" class="mt-3">
+  <div class="mb-3">
+    <label class="form-label">Placa</label>
+    <input type="text" name="placa" class="form-control" required>
   </div>
-</div>
+
+  <div class="mb-3">
+    <label class="form-label">Status</label>
+    <select name="status" class="form-select">
+      {% for s in status_options %}
+      <option value="{{ s }}">{{ s }}</option>
+      {% endfor %}
+    </select>
+  </div>
+
+  <div class="mb-3">
+    <label class="form-label">Rota</label>
+    <input type="text" name="rota" class="form-control">
+  </div>
+
+  <div class="mb-3">
+    <label class="form-label">Destino</label>
+    <input type="text" name="destino" class="form-control">
+  </div>
+
+  <div class="form-check mb-3">
+    <input type="checkbox" class="form-check-input" name="entrega_finalizada" id="entrega_finalizada">
+    <label for="entrega_finalizada" class="form-check-label">Entrega finalizada</label>
+  </div>
+
+  <button class="btn btn-success">Salvar</button>
+  <a href="{{ url_for('index') }}" class="btn btn-secondary">Cancelar</a>
+</form>
 {% endblock %}
